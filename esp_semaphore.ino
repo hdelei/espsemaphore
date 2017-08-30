@@ -1,7 +1,8 @@
 
 /*
+ *  
  *  This sketch set up a semaphore for Grupy RP Dojo challenges
- *  Connect to predefined wifi and act as simple webserver to control GPIO's
+ *  Connect ESP-01 to predefined wifi and act as simple webserver to control GPIO's
  *  The server will set a GPIO pin depending on the request
  *    http://server_ip/gpio/green will set the GPIO0 high and GPIO2 low
  *    http://server_ip/gpio/red will set the GPIO2 high ad GPIO0 low 
