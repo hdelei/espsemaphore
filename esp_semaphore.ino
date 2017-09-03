@@ -163,6 +163,12 @@ void loop() {
   Serial.println("new client");
   while(!client.available()){
     delay(1);
+    int timeout = 0;
+    timeout++;
+    if(timeout > 10000){
+      Serial.print("Infinite loop break!");
+      break;
+    }
   }
   
   // Read the first line of the request
@@ -216,7 +222,8 @@ void loop() {
   client.print(s);
   delay(1);
   Serial.println("Client disconnected");
-
+  
+  client.stop();
   // The client will actually be disconnected 
   // when the function returns and 'client' object is detroyed   
 }
