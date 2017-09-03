@@ -10,6 +10,7 @@
  *  printed to Serial when the module is connected.
  *  
  *  Author: Vanderlei
+ * Version 1.0
  */
 
 #include <ESP8266WiFi.h>
