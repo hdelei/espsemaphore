@@ -26,7 +26,7 @@ const char* WIFI_REPO[COLS][ROWS] = {
   {"PASS_1", "PASS_2","PASS_3"}
 };
 
-//List networks for debugging pourposes
+//List networks for debugging purposes
 void listNetworks() {
   // scan for nearby networks:
   Serial.println("** Scan Networks **");
