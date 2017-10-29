@@ -20,7 +20,7 @@ Usage:
 	```    
 * change SSID's with your own **SSID**s  
 * Upload to ESP-01  
-* Get your ESP-01 IP address: https://dweet.io/follow/**your_dweetThingName**  
+* Get your ESP-01 IP address: https://dweet.io/follow/your_dweetThingName  
 * Interact with your ESP-01: http://your_ip_address/gpio/type_semaphore_status  
 * Example: http://your_ip_address/gpio/green  
-* All status: /green, /red and /off  
+* Possible status: green, red and off  
