@@ -57,16 +57,6 @@ void setup() {
 
     // Post IP to dweet.io
     postIPToDweet(WiFi.localIP());
-
-//    if (client.connect(dweet, 80)){
-//      String post = "POST /dweet/for/grupyespsemaphore?IP=";
-//      
-//      post.concat(WiFi.localIP().toString());
-//      client.println(post);
-//      client.println("HOST: www.dweet.io");
-//      client.println("Connection: close");
-//      client.println();      
-//    }
    }
    else{
     while(true)      

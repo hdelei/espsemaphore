@@ -1,25 +1,10 @@
 /*
  * This sketch keeps all functions and networks 
  */
- 
- //Need to create assids.ino file with ssids constants and put 
- //in the same folder as semaforo and auxiliar files
 
- // ==== SSIDS constants model ====
+//Create your own thing name
+const String dweetThingName = "grupyespsemaphore";
 
-/* 
-const int COLS = 2;
-const int ROWS = 3;
-
-//Wifi SSID and PASSWORD repository
-const char* WIFI_REPO[COLS][ROWS] = {
-  {"SSID1",     "SSID2",     "SSID3"     },
-  {"password1", "password2", "passoword3"}
-};
-*/
-
-// ==== end SSIDS constants model ====
- 
 //high and low the pin for the number of times specified in loops and
 //the timing in customDelay
 void blink(int pin, int loops, int customDelay){
@@ -112,9 +97,11 @@ void postIPToDweet(IPAddress ip){
   //Client instance to dweet.io
   WiFiClient client;
   char dweet[] = "www.dweet.io"; 
-
-  String post = "POST /dweet/for/grupyespsemaphore?IP=";
+  
   String ipStr = ip.toString();
+  String post = "POST /dweet/for/";
+  post.concat(dweetThingName);
+  post.concat("?IP=");
   post.concat(ipStr);
     
   if (client.connect(dweet, 80)){                  
