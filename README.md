@@ -13,8 +13,8 @@ Usage:
         const int COLS = 2;  
         const int ROWS = 3;  
         const char* WIFI_REPO[COLS][ROWS] = {  
-        {"SSID1", "SSID2", "SSID3"},  
-        {"PASSWORD1", "PASSWORD2", "PASSWORD3"}  
+        	{"SSID1", "SSID2", "SSID3"},  
+        	{"PASSWORD1", "PASSWORD2", "PASSWORD3"}  
         };  
         	
 	```    
