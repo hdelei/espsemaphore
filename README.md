@@ -8,7 +8,7 @@ Green pin = 0
 Usage:  
 * change your ESP-01 name in auxiliar.ino on dweetThingName constant  
 * create assids.ino file on same arduino project folder with following model:  
-	```
+	```cpp
 	
         //CODE  
         const int COLS = 2;  
