@@ -6,8 +6,8 @@ Red pin = 2
 Green pin = 0  
 
 Usage:  
-	* change your ESP-01 name in auxiliar.ino on dweetThingName constant  
-	* create assids.ino file on same arduino project folder with following model:  
+* change your ESP-01 name in auxiliar.ino on dweetThingName constant  
+* create assids.ino file on same arduino project folder with following model:  
 	
 	//CODE  
 	const int COLS = 2;  
@@ -19,9 +19,9 @@ Usage:
 		};  
 	//END CODE  
 	
-	* change SSID's with your own SSIDs  
-	* Upload to ESP-01  
-	* Get your ESP-01 IP address: https://dweet.io/follow/your_dweetThingName  
-	* Interact with your ESP-01: http://your_ip_address/gpio/type_semaphore_status  
-	* Example: http://your_ip_address/gpio/green  
-	* All status: /green, /red and /off  
+* change SSID's with your own SSIDs  
+* Upload to ESP-01  
+* Get your ESP-01 IP address: https://dweet.io/follow/your_dweetThingName  
+* Interact with your ESP-01: http://your_ip_address/gpio/type_semaphore_status  
+* Example: http://your_ip_address/gpio/green  
+* All status: /green, /red and /off  
