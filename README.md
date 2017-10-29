@@ -1,4 +1,4 @@
-# Esp_semaphore
+# ESP-01 SEMAPHORE
 
 ESP-01 Wifi Semaphore
 
@@ -19,7 +19,7 @@ Usage:
 		};  
 	//END CODE  
 	
-	* change SSID's with your own  
+	* change SSID's with your own SSIDs  
 	* Upload to ESP-01  
 	* Get your ESP-01 IP address: https://dweet.io/follow/your_dweetThingName  
 	* Interact with your ESP-01: http://your_ip_address/gpio/type_semaphore_status  
