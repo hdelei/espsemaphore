@@ -2,8 +2,8 @@
 
 ESP-01 Wifi Semaphore
 
-Red pin = 2  
-Green pin = 0  
+Red pin = GPIO2  
+Green pin = GPIO0  
 
 Usage:  
 * change your ESP-01 name in auxiliar.ino on dweetThingName constant  
