@@ -23,10 +23,6 @@ const int GREEN_PIN = 0;
 // specify the port to listen on as an argument
 WiFiServer server(80);
 
-//Client instance to dweet.io
-//WiFiClient client;
-//char dweet[] = "www.dweet.io"; 
-
 void setup() {
   Serial.begin(9600);
   delay(10);

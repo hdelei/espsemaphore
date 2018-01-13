@@ -17,5 +17,5 @@ def check_status(exit_code):
 if __name__ == "__main__":
 	
 	exit_code = int(sys.argv[1])
-	url = 'http://192.168.25.37/gpio/' + check_status(exit_code))
+	url = 'http://192.168.25.37/gpio/' + check_status(exit_code)
 	requests.get(url)
