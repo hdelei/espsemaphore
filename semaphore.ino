@@ -36,6 +36,9 @@ void setup() {
   //List available networks. Only for debugging
   listNetworks();
   
+  //Only station mode - Default is Station and AP
+  WiFi.mode(WIFI_STA);
+  
   // Connect to WiFi network
   bool isConnected = connectWifi();
   
