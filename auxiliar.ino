@@ -69,7 +69,7 @@ void changeState(int pinX, int pinY) {
 //  return false;
 //}
 
-//New Connection code improved. Load faster than connectWifi()
+//New Connection code improved. Loads faster than connectWifi()
 //
 bool newConnectWifi() {
 
