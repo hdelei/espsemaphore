@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <title>Grupy RP Semaphore</title>
+    <link rel="icon" type="image/ico" href="http://ervamatt.com.br/favicon.ico">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .well {
+            background-color: rgb(31, 35, 39);
+            width: 100px;
+            border-radius: 20px;
+        }
+
+        .circle {
+            margin: auto;
+            margin-bottom: 2px;
+            border-radius: 50%;
+            border: 2px solid rgb(19, 19, 19);
+            width: 50px;
+            height: 50px;
+        }
+
+        .green {
+            background-color: rgb(33, 61, 31);
+        }
+
+        .yellow {
+            background-color: rgb(60, 66, 31);
+        }
+
+        .red {
+            background-color: rgb(58, 27, 27);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>GRUPY RP Semaphore</h2>
+        <div class="panel-group" style="display:table;">
+            <div class="panel panel-default">
+                <div class="panel-heading">Status Panel</div>
+                <div class="panel-body" style="display:table-cell;">
+                    <div class="well">
+                        <div class="circle green"></div>
+                        <div class="circle yellow"></div>
+                        <div class="circle red"></div>
+                    </div>
+                </div>
+
+                <div class="panel-body" style="display:table-cell;">
+                    <h2>Info:</h2>
+                    <p id="ip"></p>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>SSID</th>
+                                <th>Active</th>                                                                                              
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Unknown</td>
+                                <td>unknown</td>                                
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>    
+        function myRequest(urlRequest) {
+            $.ajax({
+                url: urlRequest,
+                success: function (response) {                    
+                    var semaphore = response;
+                    //console.log(tree);
+                    if (!semaphore.error) {
+                        changeStatus(semaphore.status);
+                    }
+                }
+            });
+        }
+
+        function changeStatus(status) {
+            var yellow = 0;
+            if (status.green == "on") {
+                $(".green").css("background-color", "rgb(10, 247, 52)");
+            }
+            else {
+                $(".green").css("background-color", "rgb(33, 61, 31)");
+                yellow++;
+            }
+            if (status.red == "on")
+                $(".red").css("background-color", "rgb(253, 61, 57)");
+            else {
+                $(".red").css("background-color", "rgb(58, 27, 27)");
+                yellow++;
+            }
+
+            if (yellow == 2)
+                $(".yellow").css("background-color", "rgb(230, 214, 23)");
+            else
+                $(".yellow").css("background-color", "rgb(60, 66, 31)");
+
+            var row = $('.table')[0].rows[1];
+            row.cells[0].textContent = status.ssid;
+            row.cells[1].textContent = "yes";   
+            $('#ip').text("IP address: " + status.ip);         
+        }
+
+        const GREEN = 1;
+        const YELLOW = 2;
+        const RED = 3;
+        $(".green").click(function () {
+            var rgb = $(".green").css("background-color");            
+            checkColor(GREEN, rgb);
+        });
+        $(".yellow").click(function () {
+            var rgb = $(".yellow").css("background-color");            
+            checkColor(YELLOW, rgb);            
+        });
+        $(".red").click(function () {
+            var rgb = $(".red").css("background-color");            
+            checkColor(RED, rgb);            
+        });
+
+        function checkColor(light, bgColor){                  
+            if(light == GREEN && bgColor == "rgb(33, 61, 31)"){
+                myRequest("set?green=on");                
+            }
+            if(light == YELLOW){
+                myRequest("switch?power=off");                
+            }
+            if(light == RED && bgColor == "rgb(58, 27, 27)"){                             
+                myRequest("set?red=on");
+            }
+        }
+
+        myRequest("status");
+
+    </script>
+</body>
+
+</html>
