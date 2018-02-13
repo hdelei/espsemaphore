@@ -1,0 +1,19 @@
+<h4>Possible request commands:</h4>
+	<a id="req-status" href="http://esp_ip_address/status">
+		http://esp_ip_address/status</a> - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+    <a id="req-status" href="http://esp_ip_address/set?green=on">
+        http://esp_ip_address/set?green=on</a> - green light on, red off - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+    <a id="req-status" href="http://esp_ip_address/set?green=off">
+		http://esp_ip_address/set?green=off</a> - green light off, red on - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+	<a id="req-status" href="http://esp_ip_address/set?red=on">
+		http://esp_ip_address/set?red=off</a> - red light on, green off - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+	<a id="req-status" href="http://esp_ip_address/set?red=off">
+		http://esp_ip_address/set?red=off</a> - red light off, green on - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+	<a id="req-status" href="http://esp_ip_address/switch?power=off">
+		http://esp_ip_address/switch?power=off</a> - both lights off - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+	<a id="req-status" href="http://esp_ip_address/switch?power=on">
+		http://esp_ip_address/switch?power=on</a> - both lights on - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
+    <a id="req-status" href="http://esp_ip_address/wifi?ssid=new-ssid&password=new_pass">
+		http://esp_ip_address/wifi?ssid=new-ssid&password=newpass</a> - reconnect wifi with new credentials<br>
+	<a id="req-status" href="http://esp_ip_address/reset">
+        http://esp_ip_address/reset</a> - restart ESP

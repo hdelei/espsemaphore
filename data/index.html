@@ -15,7 +15,6 @@
             width: 100px;
             border-radius: 20px;
         }
-
         .circle {
             margin: auto;
             margin-bottom: 2px;
@@ -24,17 +23,17 @@
             width: 50px;
             height: 50px;
         }
-
         .green {
             background-color: rgb(33, 61, 31);
         }
-
         .yellow {
             background-color: rgb(60, 66, 31);
         }
-
         .red {
             background-color: rgb(58, 27, 27);
+        }
+        .color-orange {
+            color:rgb(168, 48, 11);
         }
     </style>
 </head>
@@ -75,25 +74,34 @@
             </div>
 
         </div>
+        
+        <button class="btn-link btn-help" data-toggle="collapse" data-target="#help">Help</button>
+        <div id="help" class="collapse">
+            <span id="load-msg">Loading...</span>            
+        </div>
     </div>
-
 
     <script>    
         function myRequest(urlRequest) {
             $.ajax({
                 url: urlRequest,
-                success: function (response) {                    
-                    var semaphore = response;
-                    //console.log(tree);
-                    if (!semaphore.error) {
-                        changeStatus(semaphore.status);
+                success: function (response, status, jqXHR) {                    
+                    if(jqXHR.getResponseHeader('content-type').indexOf('application/json') >= 0 ) {
+                        var semaphore = response;                        
+                        if (!semaphore.error)
+                            changeStatus(semaphore.status);                       
                     }
+                    else if(jqXHR.getResponseHeader('content-type').indexOf('text/html') >= 0){                        
+                        getHelp(response);
+                    }
+                        
                 }
             });
         }
-
+        
+        var ipAdress = "esp_ip_address";
         function changeStatus(status) {
-            var yellow = 0;
+            var yellow = 0;            
             if (status.green == "on") {
                 $(".green").css("background-color", "rgb(10, 247, 52)");
             }
@@ -116,8 +124,20 @@
             var row = $('.table')[0].rows[1];
             row.cells[0].textContent = status.ssid;
             row.cells[1].textContent = "yes";   
+            ipAdress = status.ip;
             $('#ip').text("IP address: " + status.ip);         
         }
+        
+        function getHelp(helpHtml){  
+            helpHtml = helpHtml.replace(/esp_ip_address/g, ipAdress);          
+            $( "#help" ).append( helpHtml );
+            $("#load-msg").remove();
+        }
+
+        $(".btn-help").click(function () {                        
+            myRequest("help");            
+            $(".btn-help").off();            
+        });
 
         const GREEN = 1;
         const YELLOW = 2;

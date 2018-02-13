@@ -1,5 +1,5 @@
 /*
-   This sketch keeps all functions and networks
+   This sketch keeps all requests functions
 */
 
 //Create your own thing name
@@ -30,47 +30,7 @@ void changeState(int pinX, int pinY) {
   }
 }
 
-//Connect to wifi that first matches one of the WIFI_REPO and print status to serial out
-//Returns true if wifi is sucessfuly connected, else returns false
-//bool connectWifi() {
-//  //String currentSSID = WiFi.SSID();
-//  //String currentPSK = WiFi.psk();
-//
-//  for (int i = 0; i <= ROWS - 1; i++) {
-//    Serial.println();
-//    Serial.println();
-//    Serial.print("Connecting to ");
-//    Serial.println(WIFI_REPO[0][i]);
-//
-//    WiFi.begin(WIFI_REPO[0][i], WIFI_REPO[1][i]);
-//
-//    int count = 0;
-//    while (WiFi.status() != WL_CONNECTED) {
-//      if (count >= 80) { //wait about 40 seconds to connect i-th wifi on list
-//        Serial.println();
-//        Serial.print(WIFI_REPO[0][i]);
-//        Serial.print(" Not reached...");
-//        break;
-//      }
-//
-//      digitalWrite(RED_PIN, HIGH);
-//      delay(250);
-//      Serial.print(".");
-//      digitalWrite(RED_PIN, LOW);
-//      delay(250);
-//      count += 1;
-//    }
-//    if (WiFi.status() == WL_CONNECTED) { //Stop loop
-//      Serial.println("");
-//      Serial.println("WiFi connected");
-//      return true;
-//    }
-//  }
-//  return false;
-//}
-
 //New Connection code improved. Loads faster than connectWifi()
-//
 bool newConnectWifi() {
 
   bool match = false;
@@ -206,9 +166,6 @@ void connectWithNewCredentials(){
     return;
   }
 
-//  String ssid;
-//  String password;  
-
   String ssid = root["ssid"].as<String>();
   String password = root["password"].as<String>();
 
@@ -250,6 +207,20 @@ void handleIndex() {
     index = SPIFFS.open("/index.html", "r");
     text =  index.readString();
     index.close();
+  }
+  SPIFFS.end();
+
+  sendResponse("text/html", text);
+}
+
+void handleHelpDiv() {
+  SPIFFS.begin();
+  File htmlDiv;
+  String text = "Error reading help";
+  if (SPIFFS.exists("/helpdiv.txt")) {
+    htmlDiv = SPIFFS.open("/helpdiv.txt", "r");
+    text =  htmlDiv.readString();
+    htmlDiv.close();
   }
   SPIFFS.end();
 
@@ -422,6 +393,7 @@ void startServer() {
   server.on("/set", handleLightStatus);
   server.on("/switch", handleTwoLights);
   server.on("/", handleIndex);
+  server.on("/help", handleHelpDiv);
   server.on("/wifi", handleWifiPage);
   server.onNotFound(handleNotFound);
 

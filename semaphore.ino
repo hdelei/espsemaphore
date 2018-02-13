@@ -1,20 +1,8 @@
 /*
  *  This sketch set up a semaphore for Grupy RP Dojo challenges
  *  Connect to predefined wifi and act as simple webserver to control GPIO's
- *  The server will set a GPIO pin depending on the request
- *    http://server_ip_or_hostname/set?green=on will set the GPIO0 high and GPIO2 low
- *    http://server_ip_or_hostname/set?red=on will set the GPIO2 high and GPIO0 low
- *  server_ip is the IP address of the ESP8266 module, will be 
- *  printed to Serial when the module is connected.
  *  
- *  Author: Vanderlei
- *  Version: 2.0
- *    v 2.0 12/02/2018 - All code refactored, new functions added. See readme.md
- *  Version: 1.2
- *    v 1.2 28/10/2017 - Log IP address to dweet.io at https://dweet.io/follow/grupyespsemaphore  
- *      and split in two .ino files (semaforo, auxiliar)
- *    v 1.1 31/08/2017 - Wifi array repository and connect blink confirmation *  
- */
+  */
 
  extern "C"{
   #include "user_interface.h"
