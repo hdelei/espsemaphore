@@ -74,8 +74,10 @@ void setup() {
     //while(true)   
       Serial.println("");
       Serial.println("Debug:");   
-      WiFi.printDiag(Serial);
-      blink(RED_PIN, 25, 1000);      
+      WiFi.printDiag(Serial);      
+      blink(RED_PIN, 10, 1000);           
+      accessPointSwitch();
+      blink(GREEN_PIN, 5, 500);           
    }
 }
 
@@ -90,14 +92,8 @@ void loop() {
 
     //If there's no connection, turn AP mode on
     //to set wifi client SSID and password
-    if (WiFi.status() != WL_CONNECTED) {
-      delay(100);
-      WiFi.softAP("Esp_Access_Point");
-      WiFi.mode(WIFI_AP_STA);      
-    }
+    accessPointSwitch();
   }
-
-  server.handleClient();
-    
+  server.handleClient();    
 }
 

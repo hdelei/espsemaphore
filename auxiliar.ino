@@ -32,7 +32,6 @@ void changeState(int pinX, int pinY) {
 
 //New Connection code improved. Loads faster than connectWifi()
 bool newConnectWifi() {
-
   bool match = false;
   bool hasWifi = true;
   String currentSSID = WiFi.SSID();
@@ -74,13 +73,24 @@ bool newConnectWifi() {
         current = millis();
         if ((unsigned long)(current - prev) >= duration ) {
           prev = current;
-          Serial.println("No connection");
+          Serial.println("No connection. Starting Access Point...");
           return false;
         }
       }
     }
   }
   return false;
+}
+
+void accessPointSwitch(){  
+  if(newConnectWifi()){
+    WiFi.mode(WIFI_STA);
+  } 
+  if (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    WiFi.softAP("Esp_Access_Point");
+    WiFi.mode(WIFI_AP_STA);        
+  }
 }
 
 //List networks for debugging pourposes
