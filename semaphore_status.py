@@ -2,20 +2,22 @@ import sys
 import requests
 
 '''
-This program get the last exit status code from terminal
-and make a url request based on it's state
-        Usage: 
+this program takes the last status of the terminal 
+and creates an http request based on its exit state
+    Usage: 
 	Linux: ./program_to_get_exit_status.py 
-	       ./this_program.py $?
+	       ./semaphore_status.py $?
 	Windows: python program_to_get_exit_status.py
-		 python this_program.py %errorlevel%
+			 python semaphore_status.py %errorlevel%
 '''
 
-def check_status(exit_code):
-        return 'green' if exit_code == 0 else 'red'		
+IP_ADDRESS = 'ESP_IP_ADDRESS' #change this variable
+
+def check_status( exit_code ):
+        return 'green=on' if exit_code == 0 else 'red=on'		
 		
 if __name__ == "__main__":
 	
-	exit_code = int(sys.argv[1])
-	url = 'http://192.168.25.37/gpio/' + check_status(exit_code)
-	requests.get(url)
+	exit_code = int( sys.argv[1] )
+	url = 'http://{}/set?{}'.format( IP_ADDRESS, check_status( exit_code ) )
+	requests.get( url )
