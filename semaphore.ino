@@ -77,6 +77,9 @@ void setup() {
       WiFi.printDiag(Serial);      
       blink(RED_PIN, 10, 1000);           
       accessPointSwitch();
+      if(WiFi.SSID() == ""){
+        Serial.println("Não existe SSID");
+      }      
       blink(GREEN_PIN, 5, 500);           
    }
 }
@@ -91,9 +94,12 @@ void loop() {
     prevMillis = currentMillis;   
 
     //If there's no connection, turn AP mode on
-    //to set wifi client SSID and password
-    accessPointSwitch();
+    //to set wifi client SSID and password  
+    if(WiFi.SSID() == ""){
+      accessPointSwitch();    
+    }        
   }
+  
   server.handleClient();    
 }
 

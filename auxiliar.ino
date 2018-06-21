@@ -89,7 +89,11 @@ void accessPointSwitch(){
   if (WiFi.status() != WL_CONNECTED) {
     delay(100);
     WiFi.softAP("Esp_Access_Point");
-    WiFi.mode(WIFI_AP_STA);        
+    WiFi.mode(WIFI_AP_STA);       
+    startServer();
+    Serial.println("\n-- Server started in AP Mode --"); 
+    Serial.print("IP: "); 
+    Serial.println(WiFi.softAPIP()); 
   }
 }
 
@@ -184,13 +188,15 @@ void connectWithNewCredentials(){
 
   WiFi.mode(WIFI_OFF); 
   Serial.println("");
-  Serial.println("Wifi off. Wait 20 seconds to reconnection.");
+  Serial.println("Wifi off. Wait 20 seconds for reconnection...");
   delay(1000 * 10);
+  Serial.println("Starting Wifi connection with new credentials...");
+  
   WiFi.mode(WIFI_STA);    
   WiFi.begin(ssid.c_str(), password.c_str());
   Serial.println("");
   Serial.println("Trying to reconnect...");
-  delay(100);
+  delay(100);    
 }
 
 //Print content of given file
