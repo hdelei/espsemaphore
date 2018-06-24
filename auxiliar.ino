@@ -1,9 +1,11 @@
 /*
-   This sketch keeps all requests functions
+   This sketch keeps all requests and auxiliar functions
 */
 
-//Create your own thing name
-const String dweetThingName = "grupyespsemaphore";
+//Thing name in dweet.io 
+//It's possible create your own thing name for dweet.io
+//const String dweetThingName = "ESP" + String(ESP.getChipId()); 
+const String dweetThingName = "dojo-grupy";//custom name
 
 //high and low the pin for the number of times specified in loops and
 //the timing in customDelay
@@ -30,75 +32,9 @@ void changeState(int pinX, int pinY) {
   }
 }
 
-//New Connection code improved. Loads faster than connectWifi()
-bool newConnectWifi() {
-  bool match = false;
-  bool hasWifi = true;
-  String currentSSID = WiFi.SSID();
-  int count = WiFi.scanNetworks();
-
-  if (count == 0)
-    return false;
-  if (count > 0) {
-    unsigned long prev = 0;
-    int duration = 60000;//60 seconds
-    unsigned long current;
-
-    int matchIndex = -1;
-    for (int i = 0; i <= ROWS - 1; i++) {
-      for (int j = 0; j < count; j++) {
-        if (String(WIFI_REPO[0][i]) == WiFi.SSID(j)) {
-          matchIndex = i;
-          break;
-        }
-        if (matchIndex > -1) break;
-      }
-    }
-
-    if (matchIndex > -1) {
-      int i = matchIndex;
-      WiFi.begin(WIFI_REPO[0][i], WIFI_REPO[1][i]);
-
-      Serial.print("Connecting to: ");
-      Serial.println(WIFI_REPO[0][i]);
-
-      while (WiFi.status() != WL_CONNECTED) {
-        delay(10);
-        if (WiFi.status() == WL_CONNECTED) { //Stop loop
-          Serial.println("");
-          Serial.println("WiFi connected");
-          return true;
-        }
-
-        current = millis();
-        if ((unsigned long)(current - prev) >= duration ) {
-          prev = current;
-          Serial.println("No connection. Starting Access Point...");
-          return false;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-void accessPointSwitch(){  
-  if(newConnectWifi()){
-    WiFi.mode(WIFI_STA);
-  } 
-  if (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    WiFi.softAP("Esp_Access_Point");
-    WiFi.mode(WIFI_AP_STA);       
-    startServer();
-    Serial.println("\n-- Server started in AP Mode --"); 
-    Serial.print("IP: "); 
-    Serial.println(WiFi.softAPIP()); 
-  }
-}
-
-//List networks for debugging pourposes
-void listNetworks() {
+//List available Networks 
+bool listNetworks(String prevSSID) {
+  bool ssidMatch = false;
   // scan for nearby networks:
   Serial.println("** Scan Networks **");
   int numSsid = WiFi.scanNetworks();
@@ -121,9 +57,14 @@ void listNetworks() {
     Serial.print(" dBm");
     Serial.println();
     Serial.flush();
+    if(WiFi.SSID(thisNet) == prevSSID){
+      ssidMatch = true;
+    }
   }
+  return ssidMatch;
 }
 
+//Persist new credentials in JSON file
 bool setWifiCredentials(String ssid, String password) {
   String filename = "/config.json";
 
@@ -159,13 +100,16 @@ bool setWifiCredentials(String ssid, String password) {
   SPIFFS.end();
 
   printFile("config.json");//Serial debugging
-  
+  Serial.println("");
+
   return true;
 }
 
-void connectWithNewCredentials(){
-  String filename = "/config.json";
-  
+String getStoredCredentials(String type) {
+  //Retrieve stored credentials setted in WiFiManager
+
+  String filename = "/config.json";  
+
   SPIFFS.begin();
   File file;
 
@@ -174,30 +118,54 @@ void connectWithNewCredentials(){
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(file);
-
+  
   if (!root.success()) {
     Serial.println("Can't parse json file");
-    return;
+    return "";
   }
 
-  String ssid = root["ssid"].as<String>();
-  String password = root["password"].as<String>();
+  type = root[type].as<String>();  
 
   file.close();
-  SPIFFS.end();
-
-  WiFi.mode(WIFI_OFF); 
-  Serial.println("");
-  Serial.println("Wifi off. Wait 20 seconds for reconnection...");
-  delay(1000 * 10);
-  Serial.println("Starting Wifi connection with new credentials...");
-  
-  WiFi.mode(WIFI_STA);    
-  WiFi.begin(ssid.c_str(), password.c_str());
-  Serial.println("");
-  Serial.println("Trying to reconnect...");
-  delay(100);    
+  SPIFFS.end();  
+  return type;
 }
+
+//void connectWithNewCredentials() {
+//  String filename = "/config.json";
+//
+//  SPIFFS.begin();
+//  File file;
+//
+//  if (SPIFFS.exists(filename))
+//    file = SPIFFS.open(filename, "r");
+//
+//  DynamicJsonBuffer jsonBuffer;
+//  JsonObject& root = jsonBuffer.parseObject(file);
+//
+//  if (!root.success()) {
+//    Serial.println("Can't parse json file");
+//    return;
+//  }
+//
+//  String ssid = root["ssid"].as<String>();
+//  String password = root["password"].as<String>();
+//
+//  file.close();
+//  SPIFFS.end();
+//
+//  WiFi.mode(WIFI_OFF);
+//  Serial.println("");
+//  Serial.println("Wifi off. Wait 20 seconds for reconnection...");
+//  delay(1000 * 10);
+//  Serial.println("Starting Wifi connection with new credentials...");
+//
+//  WiFi.mode(WIFI_STA);
+//  WiFi.begin(ssid.c_str(), password.c_str());
+//  Serial.println("");
+//  Serial.println("Trying to reconnect...");
+//  delay(100);
+//}
 
 //Print content of given file
 void printFile(String filename) {
@@ -243,33 +211,6 @@ void handleHelpDiv() {
   sendResponse("text/html", text);
 }
 
-void handleWifiPage() {
-  bool validArgs = true;
-  String arg1, arg2;
-  if (server.hasArg("ssid") && server.hasArg("password")) {
-    arg1 = server.arg("ssid"), arg2 = server.arg("password");
-    if (arg1 == "" || arg2 == "")
-      validArgs = false;
-  }
-  else {
-    validArgs = false;
-  }
-
-  String jsonResponse = "{\"status\":\"error\"}";
-  bool connectNewWifi = false;
-  if (validArgs) {
-    if (setWifiCredentials(arg1, arg2));{
-      jsonResponse = "{\"status\":\"success\"}"; 
-      connectNewWifi = true;       
-    }    
-  }
-  
-  sendResponse("application/json", jsonResponse);
-  if(server.hasArg("connect") && server.arg(2) == "true"){
-    connectWithNewCredentials();
-  }
-}
-
 void postIPToDweet(IPAddress ip) {
   //Client instance to dweet.io
   WiFiClient client;
@@ -287,26 +228,28 @@ void postIPToDweet(IPAddress ip) {
     client.println("HOST: www.dweet.io");
     client.println("Connection: close");
     client.println();
-  }
+    Serial.print("Post to dweet.io: http://dweet.io/follow/" + dweetThingName);
+    Serial.println(" successfully!");
+  }  
 }
 
-String formatJson(int greenStatus, int redStatus) {  
+String formatJson(int greenStatus, int redStatus) {
   String greenRes = (greenStatus == 1) ? "on" : "off";
   String redRes = (redStatus == 1) ? "on" : "off";
 
   DynamicJsonBuffer jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();  
+  JsonObject& root = jsonBuffer.createObject();
   JsonObject& statusObj = root.createNestedObject("status");
-  
+
   statusObj["green"] = greenRes;
-  statusObj["red"] = redRes;    
+  statusObj["red"] = redRes;
   statusObj["ssid"] = WiFi.SSID();
   statusObj["ip"] = WiFi.localIP().toString();
-    
+
   String json;
   root.printTo(json);
-  
-  return json;  
+
+  return json;
 }
 
 void handleLightStatus() {
@@ -352,7 +295,7 @@ void handleLightStatus() {
   digitalWrite(otherPin, inverseState);
   //TODO: blink led before turn on. Use millis().
   int greenStatus = digitalRead(GREEN_PIN);
-  int redStatus = digitalRead(RED_PIN);  
+  int redStatus = digitalRead(RED_PIN);
 
   sendResponse("application/json", formatJson(greenStatus, redStatus));
 }
@@ -380,17 +323,17 @@ void handleStatus() {
 }
 
 //Restart the device
-void handleReset() {  
- digitalWrite(GREEN_PIN, HIGH);
- digitalWrite(RED_PIN, HIGH);
- ESP.restart(); 
+void handleReset() {
+  digitalWrite(GREEN_PIN, HIGH);
+  digitalWrite(RED_PIN, HIGH);
+  ESP.restart();
 }
 
 //Enter the upload mode
-void handleBoot() {  
- digitalWrite(GREEN_PIN, HIGH);
- digitalWrite(RED_PIN, LOW);
- ESP.restart(); 
+void handleBoot() {
+  digitalWrite(GREEN_PIN, HIGH);
+  digitalWrite(RED_PIN, LOW);
+  ESP.restart();
 }
 
 void handleNotFound() {
@@ -404,13 +347,13 @@ void sendResponse(String type, String message) {
 void startServer() {
   server.on("/reset", handleReset);
   server.on("/boot", handleBoot);
-  
-  server.on("/status", handleStatus);  
+
+  server.on("/status", handleStatus);
   server.on("/set", handleLightStatus);
   server.on("/switch", handleTwoLights);
   server.on("/", handleIndex);
   server.on("/help", handleHelpDiv);
-  server.on("/wifi", handleWifiPage);
+  //server.on("/wifi", handleWifiPage);
   server.onNotFound(handleNotFound);
 
   server.begin();

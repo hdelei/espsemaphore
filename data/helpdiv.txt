@@ -12,8 +12,6 @@
 	<a id="req-status" href="http://esp_ip_address/switch?power=off">
 		http://esp_ip_address/switch?power=off</a> - both lights off - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
 	<a id="req-status" href="http://esp_ip_address/switch?power=on">
-		http://esp_ip_address/switch?power=on</a> - both lights on - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>
-    <a id="req-status" href="http://esp_ip_address/wifi?ssid=new-ssid&password=new_pass&connect=true">
-		http://esp_ip_address/wifi?ssid=new_ssid&password=new_pass&connect=true</a> - reconnect wifi with new credentials<br>
+		http://esp_ip_address/switch?power=on</a> - both lights on - returns &lsaquo;<spam class="color-orange">Json</spam>&rsaquo;<br>    
 	<a id="req-status" href="http://esp_ip_address/reset">
         http://esp_ip_address/reset</a> - restart ESP
