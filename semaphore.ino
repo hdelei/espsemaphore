@@ -106,8 +106,8 @@ void setup() {
 
 void loop() {
 
-  /*Check if wifi is connected
-     If not, turn on AP mode
+  /*Check if wifi is connected each 10 minutes
+     if it reaches 20 minutes disconnected, restars ESP
   */
   unsigned long currentMillis = millis();
   if ((unsigned long)(currentMillis - prevMillis) >= interval ) {
@@ -124,21 +124,19 @@ void loop() {
     }
     else{
       retryCount = 0;      
-      postIPToDweet(WiFi.localIP());
+      //postIPToDweet(WiFi.localIP()); //may the IP has changed
     }
-
-    //PIECE OF CODE NOT WORKING - IT NEEDS TO BE REFACTORED
-    //WIFIMANAGER LOCKS WHEN IS ON
-    //ESP REBOOT IN FW MODE WHEN RESET OR RESTART IS EXECUTED
-    if(retryCount >= 1){
+        
+    //Wait 20 minutes of unsuccessful connections to restart the device
+    if(retryCount >= 2){
       Serial.println("Trying to restart ESP...");
-      WiFiManager wifiManager;
-      wifiManager.autoConnect("[Grupy-RP AP]");
+      //WiFiManager wifiManager;
+      //wifiManager.autoConnect("[Grupy-RP AP]");
       retryCount = 0;
-      //digitalWrite(RED_PIN, HIGH);
-      //digitalWrite(GREEN_PIN, HIGH);
-      //delay(2000);
-      //ESP.restart();
+      digitalWrite(RED_PIN, HIGH);
+      digitalWrite(GREEN_PIN, HIGH);
+      delay(2000);
+      ESP.restart();
     }
   }
 
