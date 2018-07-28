@@ -1,23 +1,24 @@
-import sys
+#Script para chamar outro script em caso de modificação
+
+from os import path, system
+from time import sleep
 import requests
 
-'''
-this program takes the last status of the terminal 
-and creates an http request based on its exit state
-    Usage: 
-	Linux: ./program_to_get_exit_status.py 
-	       ./semaphore_status.py $?
-	Windows: python program_to_get_exit_status.py
-			 python semaphore_status.py %errorlevel%
-'''
+file = 'programa.py'
+url = 'http://192.168.25.98/set?{}=on'
 
-IP_ADDRESS = 'ESP_IP_ADDRESS' #change this variable
+create_time = path.getctime(file)
 
-def check_status( exit_code ):
-        return 'green=on' if exit_code == 0 else 'red=on'		
-		
-if __name__ == "__main__":
-	
-	exit_code = int( sys.argv[1] )
-	url = 'http://{}/set?{}'.format( IP_ADDRESS, check_status( exit_code ) )
-	requests.get( url )
+while(True):
+        system('ECHO|SET /p="."')
+        mod_time = path.getmtime(file)
+        if mod_time != create_time:
+                system('cls')
+                exit_status = system(file)
+                if exit_status == 0:
+                        requests.get(url.format('green'))
+                else:
+                        requests.get(url.format('red'))
+                create_time = mod_time                
+
+        sleep(1)
